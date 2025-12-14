@@ -1,0 +1,11 @@
+package com.furniture.product.dto;
+
+import java.time.LocalDateTime;
+
+public record ApiError(
+        int status,
+        String message,
+        String path,
+        LocalDateTime timestamp
+) {}
+
