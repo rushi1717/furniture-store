@@ -3,19 +3,15 @@ package com.furniture.product.controller;
 import com.furniture.product.dto.ProductCardResponse;
 import com.furniture.product.dto.ProductRequest;
 import com.furniture.product.dto.ProductResponse;
-import com.furniture.product.entity.Product;
 import com.furniture.product.enums.ImageType;
 import com.furniture.product.service.ProductService;
-import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.util.List;
 
 @RestController
@@ -27,7 +23,7 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<ProductResponse> createProduct(
-            @RequestBody ProductRequest request) {
+           @Valid @RequestBody ProductRequest request) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(productService.createProduct(request));
@@ -65,5 +61,10 @@ public class ProductController {
     @GetMapping("/home")
     public ResponseEntity<List<ProductCardResponse>> getHomeProducts(){
         return ResponseEntity.ok(productService.getHomeProducts());
+    }
+
+    @DeleteMapping(value = "/{productId}")
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long productId){
+        return ResponseEntity.noContent().build();
     }
 }

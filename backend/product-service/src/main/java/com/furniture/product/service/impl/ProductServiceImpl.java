@@ -3,20 +3,21 @@ package com.furniture.product.service.impl;
 import com.furniture.product.dto.*;
 import com.furniture.product.entity.*;
 import com.furniture.product.enums.ImageType;
+import com.furniture.product.exception.ProductNotFoundException;
 import com.furniture.product.mapper.ProductMapper;
 import com.furniture.product.repository.ProductRepository;
 import com.furniture.product.service.ImageUploadService;
 import com.furniture.product.service.ProductService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.awt.*;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -87,7 +88,6 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Transactional
     public void addProductImages(
             Long productId,
             List<MultipartFile> files,
@@ -95,7 +95,7 @@ public class ProductServiceImpl implements ProductService {
     ) {
 
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
 
         for (MultipartFile file : files) {
 
@@ -122,11 +122,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Transactional
     public ProductResponse updateProduct(Long id, ProductRequest request) {
 
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
 
         // 🔹 update basic fields
         product.setName(request.getName());
@@ -150,6 +149,15 @@ public class ProductServiceImpl implements ProductService {
     public List<ProductCardResponse> getHomeProducts() {
         return productRepository.findHomeProducts();
     }
+
+    @Override
+    public void deleteProduct(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + id));
+        productRepository.delete(product);
+        log.info("Deleting product with id {}", id);
+    }
+
 
     private void updateVariants(Product product, List<VariantRequest> variants) {
 
@@ -201,9 +209,6 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-
-
-
     @Override
     public List<ProductResponse> getAllProducts() {
         return productRepository.findAllWithDetails()
@@ -216,7 +221,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponse getProduct(Long id) {
         return productMapper.toResponse(
                 productRepository.findById(id)
-                        .orElseThrow(() -> new RuntimeException("Not found"))
+                        .orElseThrow(() -> new ProductNotFoundException("Not found"))
         );
     }
 }

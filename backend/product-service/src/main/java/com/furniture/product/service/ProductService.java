@@ -11,11 +11,9 @@ import java.util.List;
 public interface ProductService {
     List<ProductResponse> getAllProducts();
 
-    ProductResponse getProduct(Long id);
+    ProductResponse getProduct(Long productId);
 
     ProductResponse createProduct(ProductRequest request);
-
-//    void addProductImage(Long productId, MultipartFile file, ImageType imageType);
 
     void addProductImages(
             Long productId,
@@ -23,8 +21,9 @@ public interface ProductService {
             ImageType imageType
     );
 
-    ProductResponse updateProduct(Long id ,ProductRequest productRequest);
+    ProductResponse updateProduct(Long productId ,ProductRequest productRequest);
 
     List<ProductCardResponse> getHomeProducts();
 
+    void deleteProduct(Long productId);
 }
