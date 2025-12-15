@@ -1,0 +1,44 @@
+docs/
+├── 01-requirements/
+│   ├── business-requirements.docx
+│   ├── functional-requirements.md
+│   └── non-functional-requirements.md
+│
+├── 02-architecture/
+│   ├── system-architecture.docx
+│   ├── microservices-overview.md
+│   ├── sequence-diagrams.md
+│   └── deployment-architecture.md
+│
+├── 03-api/
+│   ├── product-service-api.md
+│   ├── auth-service-api.md
+│   └── postman-collection.json
+│
+├── 04-database/
+│   ├── er-diagram.png
+│   ├── schema-design.md
+│   └── migration-strategy.md
+│
+├── 05-environments/
+│   ├── dev-env.md
+│   ├── qa-env.md
+│   └── prod-env.md
+│
+├── 06-testing/
+│   ├── testing-strategy.md
+│   ├── unit-testing.md
+│   ├── integration-testing.md
+│   └── sample-test-cases.md
+│
+├── 07-security/
+│   ├── authentication.md
+│   ├── authorization.md
+│   └── api-security.md
+│
+├── 08-devops/
+│   ├── docker-setup.md
+│   ├── ci-cd-pipeline.md
+│   └── monitoring-logging.md
+│
+└── README.md
