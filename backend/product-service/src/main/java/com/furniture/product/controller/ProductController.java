@@ -7,6 +7,9 @@ import com.furniture.product.enums.ImageType;
 import com.furniture.product.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -52,6 +55,19 @@ public class ProductController {
         return ResponseEntity.ok(productService.getProduct(productId));
     }
 
+    @GetMapping("/load-more")
+    public ResponseEntity<Page<ProductCardResponse>> loadMoreProducts(
+            @RequestParam(defaultValue = "0") int page) {
+
+        int SIZE = 26;
+        Pageable pageable = PageRequest.of(page, SIZE);
+
+        return ResponseEntity.ok(
+                productService.getProductsForLoadMore(pageable)
+        );
+    }
+
+
     @PutMapping(value = "/{productId}")
     public ResponseEntity<ProductResponse> updateProduct(@PathVariable Long productId,
                                                          @Valid @RequestBody ProductRequest productRequest){
@@ -67,4 +83,6 @@ public class ProductController {
     public ResponseEntity<Void> deleteProduct(@PathVariable Long productId){
         return ResponseEntity.noContent().build();
     }
+
+
 }

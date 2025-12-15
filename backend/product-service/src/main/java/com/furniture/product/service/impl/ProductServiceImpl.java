@@ -11,6 +11,8 @@ import com.furniture.product.service.ProductService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -158,6 +160,10 @@ public class ProductServiceImpl implements ProductService {
         log.info("Deleting product with id {}", id);
     }
 
+    @Override
+    public Page<ProductCardResponse> getProductsForLoadMore(Pageable pageable) {
+        return productRepository.findPageableProduct(pageable);
+    }
 
     private void updateVariants(Product product, List<VariantRequest> variants) {
 
