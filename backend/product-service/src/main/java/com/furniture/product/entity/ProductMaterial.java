@@ -1,7 +1,12 @@
 package com.furniture.product.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -15,13 +20,17 @@ public class ProductMaterial {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String fabricName;     // Monet
-    private String description;    // Long explanation text
+    private String fabricName;
+    @Column(length = 5000)
+    private String description;
+
     private Boolean petFriendly;
     private Boolean scratchResistant;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
-}
+    @ElementCollection
+    private List<String> warnings;
 
+    @OneToOne
+    @JoinColumn(name = "variant_id", nullable = false)
+    private ProductVariant variant;
+}

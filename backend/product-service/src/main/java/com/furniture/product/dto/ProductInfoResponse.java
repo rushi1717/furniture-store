@@ -9,9 +9,9 @@ import java.util.List;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class ProductResponse {
+@NoArgsConstructor
+public class ProductInfoResponse {
     private Long id;
     private String name;
     private String productType;
@@ -28,5 +28,5 @@ public class ProductResponse {
     private List<String> features;
     private String producerEmail;
     private String ean;
-    private List<VariantResponse> variants;
 }
+

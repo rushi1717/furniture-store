@@ -7,12 +7,9 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PackageResponse {
-
     private String boxNumber;
     private Double widthCm;
     private Double heightCm;
     private Double lengthCm;
     private Double weightKg;
-
-    // getters & setters
 }
