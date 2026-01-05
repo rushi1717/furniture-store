@@ -21,7 +21,6 @@ public class ProductDimension {
     private Double seatHeightCm;
 
     @OneToOne
-    @JoinColumn(name = "variant_id")
+    @JoinColumn(name = "variant_id", nullable = false)
     private ProductVariant variant;
 }
-

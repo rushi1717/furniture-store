@@ -4,5 +4,6 @@ public enum ImageType {
     PRIMARY,
     SECONDARY,
     GALLERY,
-    DIMENSION
+    DIMENSION,
+    VARIANT
 }

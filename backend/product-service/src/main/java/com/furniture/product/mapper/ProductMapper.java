@@ -2,40 +2,41 @@ package com.furniture.product.mapper;
 
 import com.furniture.product.dto.*;
 import com.furniture.product.entity.Product;
+import com.furniture.product.entity.ProductImage;
 import com.furniture.product.entity.ProductVariant;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
 public class ProductMapper {
-
     public ProductResponse toResponse(Product product) {
 
         ProductResponse response = new ProductResponse();
         response.setId(product.getId());
         response.setName(product.getName());
+        response.setProductType(product.getProductType());
         response.setCategory(product.getCategory());
         response.setShortDescription(product.getShortDescription());
         response.setLongDescription(product.getLongDescription());
         response.setReferenceNumber(product.getReferenceNumber());
         response.setHasStorage(product.getHasStorage());
+        response.setIsAvailable(product.getIsAvailable());
         response.setDeliveryMinWeeks(product.getDeliveryMinWeeks());
         response.setDeliveryMaxWeeks(product.getDeliveryMaxWeeks());
+
         response.setSlug(product.getSlug());
         response.setStatus(product.getStatus());
 
-        // ✅ Variants
-        response.setVariants(
-                product.getVariants().stream()
-                        .map(this::mapVariant)
-                        .toList()
-        );
+        response.setFeatures(product.getFeatures());
+        response.setProducerEmail(product.getProducerEmail());
+        response.setEan(product.getEan());
 
-        // ✅ Images
-        response.setImages(
-                product.getImages().stream()
-                        .map(img -> new ProductImageResponse(
-                                img.getImageUrl(),
-                                img.getImageType()))
+        response.setVariants(
+                product.getVariants()
+                        .stream()
+                        .map(this::mapVariant)
                         .toList()
         );
 
@@ -49,13 +50,20 @@ public class ProductMapper {
         vr.setSize(variant.getSize());
         vr.setPrice(variant.getPrice());
         vr.setCurrency(variant.getCurrency());
-        vr.setFabricName(variant.getFabricName());
+        vr.setDescription(variant.getDescription());
         vr.setFabricCode(variant.getFabricCode());
         vr.setColor(variant.getColor());
         vr.setIsDefault(variant.getIsDefault());
         vr.setVariantSlug(variant.getVariantSlug());
 
-        // ✅ Dimension
+        // ✅ weights
+        vr.setProductWeightKg(variant.getProductWeightKg());
+        vr.setMaxSupportedWeightKg(variant.getMaxSupportedWeightKg());
+        vr.setTotalWeightWithPackagingKg(
+                variant.getTotalWeightWithPackagingKg()
+        );
+
+        // ✅ dimension
         if (variant.getDimension() != null) {
             DimensionResponse dr = new DimensionResponse();
             dr.setWidthCm(variant.getDimension().getWidthCm());
@@ -65,9 +73,10 @@ public class ProductMapper {
             vr.setDimension(dr);
         }
 
-        // ✅ Packages
+        // ✅ packages
         vr.setPackages(
-                variant.getPackages().stream()
+                variant.getPackages()
+                        .stream()
                         .map(pkg -> {
                             PackageResponse pr = new PackageResponse();
                             pr.setBoxNumber(pkg.getBoxNumber());
@@ -80,6 +89,76 @@ public class ProductMapper {
                         .toList()
         );
 
+        // ✅ material
+        if (variant.getMaterial() != null) {
+            MaterialResponse mr = new MaterialResponse();
+            mr.setFabricName(variant.getMaterial().getFabricName());
+            mr.setDescription(variant.getMaterial().getDescription());
+            mr.setPetFriendly(variant.getMaterial().getPetFriendly());
+            mr.setScratchResistant(variant.getMaterial().getScratchResistant());
+            mr.setWarnings(variant.getMaterial().getWarnings());
+            vr.setMaterial(mr);
+
+            // keep fabricName in sync
+            vr.setFabricName(variant.getMaterial().getFabricName());
+        }
+
+        // ✅ images + primary image
+        // ✅ images (THIS is where it is used)
+        vr.setImages(mapVariantImages(variant));
+
         return vr;
     }
+
+    // ✅ PLACE THIS METHOD HERE
+    private VariantImageResponse mapVariantImages(ProductVariant variant) {
+
+        String primary = null;
+        String secondary = null;
+        String dimension = null;
+        String variantImg = null;
+        List<String> gallery = new ArrayList<>();
+
+        for (ProductImage img : variant.getImages()) {
+            switch (img.getImageType()) {
+                case PRIMARY -> primary = img.getImageUrl();
+                case SECONDARY -> secondary = img.getImageUrl();
+                case DIMENSION -> dimension = img.getImageUrl();
+                case VARIANT -> variantImg = img.getImageUrl();
+                case GALLERY -> gallery.add(img.getImageUrl());
+            }
+        }
+
+        return new VariantImageResponse(primary, secondary, dimension,variantImg, gallery);
+    }
+
+    public VariantResponse toVariantResponse(ProductVariant variant) {
+        return mapVariant(variant); // reuse your existing mapping
+    }
+
+
+    public ProductInfoResponse toInfoResponse(Product product) {
+
+        ProductInfoResponse r = new ProductInfoResponse();
+        r.setId(product.getId());
+        r.setName(product.getName());
+        r.setProductType(product.getProductType());
+        r.setCategory(product.getCategory());
+        r.setShortDescription(product.getShortDescription());
+        r.setLongDescription(product.getLongDescription());
+        r.setReferenceNumber(product.getReferenceNumber());
+        r.setHasStorage(product.getHasStorage());
+        r.setIsAvailable(product.getIsAvailable());
+        r.setDeliveryMinWeeks(product.getDeliveryMinWeeks());
+        r.setDeliveryMaxWeeks(product.getDeliveryMaxWeeks());
+        r.setSlug(product.getSlug());
+        r.setStatus(product.getStatus());
+        r.setFeatures(product.getFeatures());
+        r.setProducerEmail(product.getProducerEmail());
+        r.setEan(product.getEan());
+
+        return r;
+    }
+
+
 }
